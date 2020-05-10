@@ -35,7 +35,6 @@ spec:
     {
         node(label) {
             stage('Build with Kaniko') {
-                git 'https://github.com/cb-jeffduska/simple-docker-example.git'
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
