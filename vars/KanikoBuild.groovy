@@ -1,6 +1,13 @@
-def label = "kaniko-${UUID.randomUUID().toString()}"
+def call(body) {
+    // evaluate the body block, and collect configuration into the object
+    def pipelineParams = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = pipelineParams
+    body()
 
-podTemplate(name: 'kaniko', label: label, yaml: """
+    def label = "kaniko-${UUID.randomUUID().toString()}"
+
+    podTemplate(name: 'kaniko', label: label, yaml: """
 kind: Pod
 metadata:
   name: kaniko
@@ -25,15 +32,16 @@ spec:
             - key: .dockerconfigjson
               path: config.json
 """) {
-    node(label) {
-        stage('Build with Kaniko') {
+        node(label) {
+            stage('Build with Kaniko') {
 
-            git 'https://github.com/cb-jeffduska/simple-docker-example.git'
-            container(name: 'kaniko', shell: '/busybox/sh') {
-                withEnv(['PATH+EXTRA=/busybox']) {
-                    sh '''#!/busybox/sh
+                git 'https://github.com/cb-jeffduska/simple-docker-example.git'
+                container(name: 'kaniko', shell: '/busybox/sh') {
+                    withEnv(['PATH+EXTRA=/busybox']) {
+                        sh '''#!/busybox/sh
             /kaniko/executor --context `pwd` --destination chrisjohnson00/hello-kaniko:latest 
             '''
+                    }
                 }
             }
         }
