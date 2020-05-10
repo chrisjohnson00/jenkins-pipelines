@@ -37,11 +37,19 @@ spec:
             stage('Checkout') {
                 checkout scm
             }
+            stage("Prepare to build") {
+                steps{
+                    script{
+                        dockerOrg = pipelineParams.dockerOrg
+                        containerName = pipelineParams.containerName
+                    }
+                }
+            }
             stage('Build with Kaniko') {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-                           /kaniko/executor --context `pwd` --destination ${pipelineParams.dockerOrg}/${pipelineParams.containerName}:${BRANCH_NAME}
+                           /kaniko/executor --context `pwd` --destination ${dockerOrg}/${containerName}:${BRANCH_NAME}
                            '''
                     }
                 }
