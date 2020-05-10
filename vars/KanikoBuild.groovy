@@ -44,9 +44,7 @@ spec:
             stage('Build with Kaniko') {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
-                        sh '''#!/busybox/sh
-                           /kaniko/executor --context `pwd` --destination ${dockerOrg}/${containerName}:${BRANCH_NAME}
-                           '''
+                        sh "/kaniko/executor --context `pwd` --destination ${dockerOrg}/${containerName}:${BRANCH_NAME}"
                     }
                 }
             }
