@@ -31,16 +31,16 @@ spec:
           items:
             - key: .dockerconfigjson
               path: config.json
-""") {
+""")
+    {
         node(label) {
             stage('Build with Kaniko') {
-
                 git 'https://github.com/cb-jeffduska/simple-docker-example.git'
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     withEnv(['PATH+EXTRA=/busybox']) {
                         sh '''#!/busybox/sh
-            /kaniko/executor --context `pwd` --destination chrisjohnson00/hello-kaniko:latest 
-            '''
+                           /kaniko/executor --context `pwd` --destination chrisjohnson00/hello-kaniko:latest
+                           '''
                     }
                 }
             }
