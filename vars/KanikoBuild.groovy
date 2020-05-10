@@ -38,12 +38,8 @@ spec:
                 checkout scm
             }
             stage("Prepare to build") {
-                steps{
-                    script{
-                        dockerOrg = pipelineParams.dockerOrg
-                        containerName = pipelineParams.containerName
-                    }
-                }
+                dockerOrg = pipelineParams.dockerOrg
+                containerName = pipelineParams.containerName
             }
             stage('Build with Kaniko') {
                 container(name: 'kaniko', shell: '/busybox/sh') {
